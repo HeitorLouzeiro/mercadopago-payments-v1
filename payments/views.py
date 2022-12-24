@@ -48,7 +48,7 @@ def home(request):
             item = {
                 'title': order.title,
                 'quantity': quantitly_cart,
-                'currency_id': order.currency,
+                'currency_id': 'BRL',
                 'unit_price':  float(order.value * quantitly_cart)
             }
             payment_data['items'].append(item)
@@ -118,3 +118,11 @@ def removecart(request):
             request.session.save()
             messages.success(request, 'Product removed from cart.')
         return redirect('home')
+
+
+def success(request):
+    return render(request, 'payments/pages/success.html')
+
+
+def failure(request):
+    return render(request, 'payments/pages/failure.html')
