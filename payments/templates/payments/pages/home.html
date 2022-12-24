@@ -47,20 +47,28 @@
                     {% for product in cart_items.values %}
                     <tr>
                         <td>{{product.title}} 
-                            <a href="{% url 'home' %}?product_id={{product.product_id}} "><i class="bi bi-x-circle"></i> </a>
+                            <a href="{% url 'removecart' %}?product_id={{product.product_id}} "><i class="bi bi-x-circle"></i> </a>
                         </td>
                         <td>{{product.value}}</td>
                         <td>{{product.quantity}}</td>
                     </tr>
+                    {% empty %}
+                    <h3 style="text-align: center;">Sorry, no data in this list.</h3>
                     {% endfor %}
                 </tbody>
             </table>
-            <form action="#" method="POST">
-                {% csrf_token %}
+            {% if cart_items %}
+                <form action="#" method="POST">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 mb-3">
+                        <button class="btn btn-primary" type="submit">Checkout</button>
+                    </div>
+                </form>
+            {% else %}
                 <div class="d-grid gap-2 mb-3">
-                    <button class="btn btn-primary" type="submit">Checkout</button>
+                    <button class="btn btn-primary" type="button" disabled>Checkout</button>
                 </div>
-            </form>
+            {% endif %}
         </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
