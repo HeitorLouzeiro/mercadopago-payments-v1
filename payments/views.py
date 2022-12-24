@@ -103,3 +103,18 @@ def addtocart(request):
         request.session.save()
         messages.success(request, 'Product added to cart.')
         return redirect('home')
+
+
+def removecart(request):
+    if request.method == 'GET':
+        product_id = request.GET.get('product_id')
+        if not product_id:
+            messages.error(request, 'This product does not exist.')
+            return redirect('home')
+
+        cart_items = request.session.get('cart_items')
+        if product_id in cart_items:
+            del cart_items[product_id]
+            request.session.save()
+            messages.success(request, 'Product removed from cart.')
+        return redirect('home')
