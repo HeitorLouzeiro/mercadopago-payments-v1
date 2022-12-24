@@ -1,6 +1,7 @@
 import mercadopago
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Payment
 
@@ -45,7 +46,7 @@ def home(request):
         for order in orders:
             # Obter a quantidade do item da sessão
             item = {
-                'title': order.description,
+                'title': order.title,
                 'quantity': quantitly_cart,
                 'currency_id': order.currency,
                 'unit_price':  float(order.value * quantitly_cart)
@@ -58,3 +59,47 @@ def home(request):
     # Obter o link para o Checkout Pro
     checkout_url = preference_response['response']['init_point']
     return redirect(checkout_url)
+
+
+def addtocart(request):
+    if request.method == 'GET':
+        # Destroying the session
+        # if request.session.get('cart_items'):
+        #     del request.session['cart_items']
+        #     request.session.save()
+
+        product_id = request.GET.get('product_id')  # Obter o ID do produto
+        if not product_id:
+            messages.error(request, 'This product does not exist.')
+            return redirect('home')
+
+        product = get_object_or_404(Payment, pk=product_id)
+
+        # Obter a lista de itens no carrinho da sessão
+        title = product.title
+        value = float(product.value)
+        quantity = 1
+
+        if not request.session.get('cart_items'):
+            request.session['cart_items'] = {}
+            request.session.save()
+
+        cart_items = request.session['cart_items']
+
+        if product_id in cart_items:
+            quantitly_cart = cart_items[product_id]['quantity']
+            quantitly_cart += 1
+
+            cart_items[product_id]['quantity'] = quantitly_cart
+            cart_items[product_id]['value'] = value * quantitly_cart
+
+        else:
+            cart_items[product_id] = {
+                'product_id': product_id,
+                'title': title,
+                'value': value,
+                'quantity': quantity,
+            }
+        request.session.save()
+        messages.success(request, 'Product added to cart.')
+        return redirect('home')

@@ -14,7 +14,8 @@
           <a class="nav-link active" aria-current="page" href="#">Home</a>
         </li>
     </ul>
-    <form action="#">
+    {% include 'payments/pages/messeges.html' %}
+    <form action="{% url 'addtocart' %}">
         <div class="container d-flex text-center">
             {% for product  in products %}
                 <div class="col">
@@ -45,8 +46,8 @@
                 <tbody>
                     {% for product in cart_items.values %}
                     <tr>
-                        <td>{{product.description}} 
-                            <a href="{% url 'removecart' %}?product_id={{product.product_id}} "><i class="bi bi-x-circle"></i> </a>
+                        <td>{{product.title}} 
+                            <a href="{% url 'home' %}?product_id={{product.product_id}} "><i class="bi bi-x-circle"></i> </a>
                         </td>
                         <td>{{product.value}}</td>
                         <td>{{product.quantity}}</td>
