@@ -121,6 +121,7 @@ def removecart(request):
 
 
 def success(request):
+    request.session.clear()
     return render(request, 'payments/pages/success.html')
 
 
